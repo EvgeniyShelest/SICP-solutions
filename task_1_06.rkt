@@ -1,0 +1,26 @@
+#lang racket
+
+(require rackunit)
+(define (sqrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x)
+                 x)))
+(define (new-if predicate then-clause else-clause)
+  (cond (predicate then-clause)
+        (else else-clause)))
+(define (sqrt-new guess x)
+  (new-if (good-enough? guess x)
+      guess
+      (sqrt-new (improve guess x)
+                 x)))
+(define (good-enough? guess x)
+  (< (abs (- (square guess) x)) 0.001))
+(define (improve guess x)
+  (average guess (/ x guess)))
+(define (square x)
+  (* x x))
+(define (average x y)
+  (/ (+ x y) 2))
+(check-equal? (sqrt-iter 1.0 9)
+              (sqrt-new 1.0 9))
