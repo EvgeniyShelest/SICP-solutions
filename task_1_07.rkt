@@ -1,5 +1,4 @@
 #lang racket
-(require rackunit)
 (define (sqrt-iter1 guess x)
   (if (good-enough1? guess x)
       guess
@@ -18,13 +17,15 @@
   (< (abs (- (improve guess x) guess)) (* guess 1e-6)))
 
 (define (improve guess x)
-  (average guess (/ x guess)))
+  (if (= guess 0.0)
+      1.0
+      (average guess (/ x guess))))
 (define (square x)
   (* x x))
 (define (average x y)
   (/ (+ x y) 2))
-;(check-equal? (< (abs (- 1 2)) 1e-6)
+
 (sqrt-iter1 900.0 1e6)
 (sqrt-iter2 990.0 1e6)
 (sqrt-iter1 1.0 2)
-(sqrt-iter2 1.0 2)
+(sqrt-iter2 -0.0 2)
