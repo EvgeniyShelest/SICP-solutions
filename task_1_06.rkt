@@ -18,9 +18,9 @@
       (sqrt-new (improve guess x)
                  x)))
 (define (good-enough? guess x)
-  (< (abs (- (square guess) x)) 0.001))
+  (< (abs (- (square guess) x)) 0.000001))
 (define (improve guess x)
-   (if (= guess 0.0)
+   (if (< (abs guess) 1e-10)  ;prevent division by zero
       1.0
       (average guess (/ x guess))))
 (define (square x)
@@ -28,4 +28,6 @@
 (define (average x y)
   (/ (+ x y) 2))
 (sqrt-iter 1.0 9)
-;(sqrt-new 1.4 2)
+(sqrt-iter 1.0 1e6)
+(sqrt-iter 1.0 1e-20)
+;(sqrt-new 1.4 2)  ; зацикливание
