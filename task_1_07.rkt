@@ -13,8 +13,13 @@
 (define (improve guess x)
   (average guess (/ x guess)))
 
+;реализация относительной погрешности для x бОльших чем 1/eps
+;дает бОльшую погрешность чем при использовании абсолютной погрешности.
+;Поэтому для них используем АП.
+;Для малых точность увеличилась на порядки.
 (define (good-enough? guess x)
-  (< (abs (- (improve guess x) guess)) (* guess eps)))
+  (if (> x (/ 1 eps)) (< (abs (- (square guess) x)) eps)
+                      (< (abs (- (improve guess x) guess)) (* guess eps))))
 
 (define (sqrt-iter guess x)
   (if (good-enough? guess x)
@@ -24,15 +29,16 @@
 
 (define (sqrt-my x)
   (cond ((< x 0) #f)
-        ((< x 1e-323) 0.0)
-        ((eqv? x +inf.0) +inf.0)
+        ((< x eps) 0.0)
         (else (sqrt-iter 1.0 x))))
 
 (check-equal? (sqrt-my 9) 3.0)
-(check-equal? (sqrt-my 1e-325) 0.0)
 (check-false (sqrt-my -1))
 (check < (abs (- (sqrt-my 1e6) (sqrt 1e6))) eps)
-(check < (abs (- (sqrt-my 1e-20) (sqrt 1e-20))) eps)
+
+(sqrt-my 9)
+(sqrt-my 1e16)
+(sqrt-my 1e-20)
 
 
 
