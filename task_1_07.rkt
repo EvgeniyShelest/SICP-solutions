@@ -15,11 +15,10 @@
 
 ;реализация относительной погрешности для x бОльших чем 1/eps
 ;дает бОльшую погрешность чем при использовании абсолютной погрешности.
-;Поэтому для них используем АП.
+;Для них необходимо подбирать eps для обеспечения нужной точности.
 ;Для малых точность увеличилась на порядки.
 (define (good-enough? guess x)
-  (if (> x (/ 1 eps)) (< (abs (- (square guess) x)) eps)
-                      (< (abs (- (improve guess x) guess)) (* guess eps))))
+  (< (abs (- (improve guess x) guess)) (* guess eps)))
 
 (define (sqrt-iter guess x)
   (if (good-enough? guess x)
@@ -39,7 +38,5 @@
 (sqrt-my 9)
 (sqrt-my 1e16)
 (sqrt-my 1e-20)
-
-
 
 
