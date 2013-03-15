@@ -5,16 +5,18 @@
 (define eps 1e-6)
 (define (square x)
   (* x x))
-(define (improve guess x)
-  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
-(define (good-enough? guess x)
-  (< (abs (/ (- (improve guess x) guess) guess)) eps))
 
 (define (cubert-iter guess x)
-  (if (good-enough? guess x)
-      (improve guess x)
-      (cubert-iter (improve guess x)
-                 x)))
+  (define (improve)
+    (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+  (define next-guess (improve))
+  (define (good-enough?)
+    (< (abs (/ (- next-guess guess) guess)) eps)) 
+  
+  (if (good-enough?)
+      next-guess
+      (cubert-iter next-guess
+                   x)))
 
 (define (cubert x)
   (cond ((< (abs x) eps) 0.0)
