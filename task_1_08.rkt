@@ -17,9 +17,7 @@
                  x)))
 
 (define (cubert x)
-  (cond ((< (abs x) 1e-323) 0.0)
-        ((eqv? x +inf.0) +inf.0)
-        ((eqv? x -inf.0) -inf.0)
+  (cond ((< (abs x) eps) 0.0)
         ((< x 0) (cubert-iter -1.0 x))
         (else (cubert-iter 1.0 x))))
 
