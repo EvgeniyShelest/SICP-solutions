@@ -1,24 +1,30 @@
 #lang racket
+
+(require rackunit)
+
+(define eps 1e-6)
+(define (square x)
+  (* x x))
+(define (improve guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+(define (good-enough? guess x)
+  (< (abs (/ (- (improve guess x) guess) guess)) eps))
+
 (define (cubert-iter guess x)
   (if (good-enough? guess x)
-      guess
+      (improve guess x)
       (cubert-iter (improve guess x)
                  x)))
 
-(define (good-enough? guess x)
-  (< (abs (- (cube guess) x)) 1e-5))
+(define (cubert x)
+  (cond ((< (abs x) 1e-323) 0.0)
+        ((eqv? x +inf.0) +inf.0)
+        ((eqv? x -inf.0) -inf.0)
+        ((< x 0) (cubert-iter -1.0 x))
+        (else (cubert-iter 1.0 x))))
 
-(define (improve guess x)
-   (if (= guess 0.0)
-      1.0
-      (/ (+ (/ x (square guess)) (* 2 guess)) 3)))
-(define (square x)
-  (* x x))
-(define (cube x)
-  (* x x x))
-
-(cubert-iter -2.0 27)
-(cubert-iter -0.0 27)
-(cubert-iter 2.0 27)
-(cubert-iter 90.0 1e6)
+(check-equal? (cubert -0.0) 0.0)
+(check < (abs (- (cubert 27) 3.0)) eps)
+(check < (abs (- (cubert -27) -3.0)) eps)
+(check < (abs (- (cubert 1e6) 1e2)) eps)
 
